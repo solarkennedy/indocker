@@ -34,6 +34,32 @@ kyle
 * Code always runs as themselves, the same user outside Docker and inside Docker
 * Files in your directory are the same files in the directory inside Docker (`$pwd` is volume mounted as rw)
 
+## Installation
+
+Fetch the scrip however you see fit:
+
+    sudo wget -O /usr/local/bin/indocker https://github.com/solarkennedy/indocker/raw/master/indocker
+    
+## Usage
+
+1. Get a `Dockerfile` in your current directory if you don't have one. Here is an example based on [Alpine](https://hub.docker.com/_/alpine/)
+```
+cat <<EOF > Dockerfile
+FROM alpine
+RUN apk update && apk add sudo
+EOF
+```
+
+2. Run `indocker` to get an interactive shell or `indocker $command` to run a specific command. `indocker` takes no other options.
+
+   indocker
+
+## Requirements
+
+* The user running indocker MUST be able to run docker commands normally (usually this means being in the `docker` group).
+* The Dockerfile MUST install sudo binary into the docker image for correct user switching.
+* `/etc/passwd` and `/etc/group` MUST be readable by the user running docker commands.
+
 ## License
 
 See `LICENSE`
