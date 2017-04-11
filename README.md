@@ -60,6 +60,7 @@ EOF
 
 * How [rultor.com runs containers as non-root](http://www.yegor256.com/2014/08/29/docker-non-root.html)
 * [SCUBA](https://github.com/JonathonReinhart/scuba) - Simple Container-Utilizing Build Apparatus
+* [pre-commit docker hooks](https://github.com/pre-commit/pre-commit/blob/1be4e4f82e31336fa5fca096c962c72ac0041537/pre_commit/languages/docker.py)
 
 ## License
 
