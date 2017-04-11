@@ -56,6 +56,11 @@ EOF
 * The user running indocker MUST be able to run docker commands normally (usually this means being in the `docker` group).
 * `/etc/passwd` and `/etc/group` MUST be readable by the user running docker commands.
 
+## Prior Art
+
+* How [rultor.com runs containers as non-root](http://www.yegor256.com/2014/08/29/docker-non-root.html)
+* [SCUBA](https://github.com/JonathonReinhart/scuba) - Simple Container-Utilizing Build Apparatus
+
 ## License
 
 See `LICENSE`
