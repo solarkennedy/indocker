@@ -1,0 +1,57 @@
+#!/bin/sh
+indocker_path="$(realpath $0)"
+
+guess_command() {
+  if [ -z "$*" ]; then
+    if [ -x /bin/bash ]; then
+      users_cmd=/bin/bash
+    else
+      users_cmd=/bin/sh
+    fi
+  else
+    users_cmd="$*"
+  fi
+
+  if [ -x '/usr/bin/sudo' ]; then
+    cmd="/usr/bin/sudo -u #${indocker_uid} ${users_cmd}"
+  else
+    cmd="echo 'No sudo binary found in the docker image. Please make sure sudo is present'"
+  fi
+
+  # TODO: dumb-init if available
+  echo "$cmd"
+}
+ 
+generate_image_name() {
+  # TODO: Generate something randomer
+  echo -n "${USER}_indocker"
+}
+
+guess_image() {
+  if ! [ -f Dockerfile ]; then
+    echo "indocker error: Please run indocker where there is a Dockerfile"
+    exit 3
+  fi
+
+  if [ -f .indocker_image ] && [ .indocker_image -nt Dockerfile ]; then
+    cat .indocker_image
+  else
+    image_name="$(generate_image_name)"
+    docker build -t "${image_name}" . >&2
+    echo "${image_name}" | tee .indocker_image
+  fi
+}
+
+if [ "$$" -eq 1 ]; then
+  # Inside of docker, go ahead and run the command as needed
+  cd /indocker
+  exec $(guess_command $@)
+else
+  image="$(guess_image)"
+  docker run  \
+    --interactive --tty --net=host --rm \
+    --env indocker_uid="$(id -u)" \
+    --volume "$(pwd):/indocker:rw" --volume "${indocker_path}":/usr/bin/indocker:ro \
+    --volume /etc/passwd:/etc/passwd:ro --volume /etc/group:/etc/group:ro \
+    --entrypoint=/usr/bin/indocker "$image" "$@"
+fi
