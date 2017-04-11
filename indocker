@@ -1,4 +1,5 @@
 #!/bin/sh
+set -vx
 indocker_path="$(realpath $0)"
 
 guess_command() {
@@ -12,14 +13,8 @@ guess_command() {
     users_cmd="$*"
   fi
 
-  if [ -x '/usr/bin/sudo' ]; then
-    cmd="/usr/bin/sudo -u #${indocker_uid} ${users_cmd}"
-  else
-    cmd="echo 'No sudo binary found in the docker image. Please make sure sudo is present'"
-  fi
-
   # TODO: dumb-init if available
-  echo "$cmd"
+  echo "$users_cmd"
 }
  
 generate_image_name() {
@@ -50,7 +45,7 @@ else
   image="$(guess_image)"
   docker run  \
     --interactive --tty --net=host --rm \
-    --env indocker_uid="$(id -u)" \
+    --user $(id -u):$(id -g) \
     --volume "$(pwd):/indocker:rw" --volume "${indocker_path}":/usr/bin/indocker:ro \
     --volume /etc/passwd:/etc/passwd:ro --volume /etc/group:/etc/group:ro \
     --entrypoint=/usr/bin/indocker "$image" "$@"

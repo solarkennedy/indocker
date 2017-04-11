@@ -16,8 +16,6 @@ kyle
  home ⮁ kyle ⮀ $ ⮀indocker
 Sending build context to Docker daemon 216.2 MB
 Step 1 : FROM alpine
- ---> d285ca5058c6
-Step 2 : RUN apk update && apk add sudo
  ---> Using cache
  ---> 28e3252b4b9f
 Successfully built 28e3252b4b9f
@@ -46,7 +44,6 @@ Fetch the scrip however you see fit:
 ```
 cat <<EOF > Dockerfile
 FROM alpine
-RUN apk update && apk add sudo
 EOF
 ```
 
@@ -57,7 +54,6 @@ EOF
 ## Requirements
 
 * The user running indocker MUST be able to run docker commands normally (usually this means being in the `docker` group).
-* The Dockerfile MUST install sudo binary into the docker image for correct user switching.
 * `/etc/passwd` and `/etc/group` MUST be readable by the user running docker commands.
 
 ## License
